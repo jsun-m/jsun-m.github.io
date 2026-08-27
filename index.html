@@ -94,6 +94,60 @@
   .harness-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
   .harness-link:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
 
+  /* inquiry page */
+  .inq { max-width: 62ch; }
+  .inq-field { margin-top: 18px; }
+  .inq-field label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .inq-field label::before { content: "$ "; color: var(--accent); }
+  .inq-reasons { display: flex; flex-wrap: wrap; gap: 8px; }
+  .inq-reason {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: none;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    color: var(--ink);
+    padding: 4px 14px;
+    cursor: pointer;
+  }
+  .inq-reason:hover { border-color: var(--accent); color: var(--accent); }
+  .inq-reason.active { background: var(--ink); color: var(--paper); }
+  .inq input, .inq textarea {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--ink);
+    background: rgba(255,255,255,0.5);
+    border: 1px dashed var(--line);
+    padding: 8px 10px;
+    outline: none;
+    resize: vertical;
+  }
+  .inq input:focus, .inq textarea:focus { border: 1px solid var(--accent); }
+  .inq-preview { margin-top: 18px; font-size: 12.5px; color: var(--ink-faint); }
+  .inq-preview b { color: var(--ink-soft); font-weight: 500; }
+  .inq-send {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    font-weight: 600;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    padding: 8px 18px;
+    cursor: pointer;
+  }
+  .inq-send:hover { background: var(--accent); border-color: var(--accent); }
+  .inq-send::after { content: " ->"; }
+
   /* agent harness page */
   .hlayer { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 13px 0; border-bottom: 1px dashed var(--line); }
   .hlayer:last-of-type { border-bottom: none; }
@@ -402,6 +456,7 @@
       <a href="#skills" data-sec="skills">toolbox</a>
       <a href="#harness" data-sec="harness">agent harness</a>
       <a href="#twin" data-sec="twin">hire my twin</a>
+      <a href="#inquiry" data-sec="inquiry">inquiry</a>
     </nav>
   </aside>
 
@@ -562,6 +617,33 @@
     </p>
   </section>
 
+  <section id="inquiry">
+    <h2>Inquiry</h2>
+    <p class="twin-blurb">Want to work together — or just talk shop? Pick a reason and this composes an email straight to my inbox, pre-formatted so I'll spot it.</p>
+    <div class="inq">
+      <div class="inq-field">
+        <label>reason</label>
+        <div class="inq-reasons" id="inq-reasons">
+          <button class="inq-reason active" data-reason="consulting">consulting</button>
+          <button class="inq-reason" data-reason="hire">hire</button>
+          <button class="inq-reason" data-reason="coffee chat">coffee chat</button>
+          <button class="inq-reason" data-reason="speaking">speaking</button>
+          <button class="inq-reason" data-reason="other">other</button>
+        </div>
+      </div>
+      <div class="inq-field">
+        <label>name</label>
+        <input id="inq-name" maxlength="80" placeholder="your name (and company, if relevant)" autocomplete="name">
+      </div>
+      <div class="inq-field">
+        <label>message</label>
+        <textarea id="inq-msg" rows="6" maxlength="4000" placeholder="what are you working on, and how can I help?"></textarea>
+      </div>
+      <p class="inq-preview">subject: <b id="inq-subject">[portfolio] consulting</b></p>
+      <button class="inq-send" id="inq-send">compose email</button>
+    </div>
+  </section>
+
   <footer>
     <span>© 2026 John Marshall — EOF</span>
     <span>USC alum · <a href="mailto:john.sun.marshall@gmail.com">john.sun.marshall@gmail.com</a></span>
@@ -584,7 +666,7 @@
 <script>
 (function () {
   // hash router: one section visible at a time, experience by default
-  var SECTIONS = ["experience", "harness", "opensource", "prs", "projects", "writing", "skills", "twin"];
+  var SECTIONS = ["experience", "harness", "opensource", "prs", "projects", "writing", "skills", "twin", "inquiry"];
 
   function show(id) {
     if (SECTIONS.indexOf(id) === -1) id = "experience";
@@ -603,6 +685,45 @@
   route();
   // the browser's native anchor-jump on load can outrace show(); reset it
   window.addEventListener("load", function () { window.scrollTo(0, 0); });
+})();
+</script>
+
+<script>
+(function () {
+  // inquiry page: compose a pre-formatted mailto
+  var EMAIL = "john.sun.marshall@gmail.com";
+  var reason = "consulting";
+  var nameEl = document.getElementById("inq-name");
+  var msgEl = document.getElementById("inq-msg");
+  var subjEl = document.getElementById("inq-subject");
+
+  function subject() {
+    var n = nameEl.value.trim();
+    return "[portfolio] " + reason + (n ? " — " + n : "");
+  }
+
+  function refresh() { subjEl.textContent = subject(); }
+
+  document.querySelectorAll(".inq-reason").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".inq-reason").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      reason = btn.dataset.reason;
+      refresh();
+    });
+  });
+  nameEl.addEventListener("input", refresh);
+
+  document.getElementById("inq-send").addEventListener("click", function () {
+    var body =
+      "reason: " + reason + "\n" +
+      "from: " + (nameEl.value.trim() || "(no name given)") + "\n\n" +
+      (msgEl.value.trim() || "(no message)") + "\n\n" +
+      "— sent via jsun-m.github.io/#inquiry";
+    location.href = "mailto:" + EMAIL +
+      "?subject=" + encodeURIComponent(subject()) +
+      "&body=" + encodeURIComponent(body);
+  });
 })();
 </script>
 
