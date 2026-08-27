@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>John Marshall</title>
+<meta name="description" content="John Marshall — software engineer building AI infrastructure and agentic systems. Founding engineer at Beam, now at AG2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f4ed;
+    --ink: #1a1915;
+    --ink-soft: #55524a;
+    --ink-faint: #8a867b;
+    --line: #dcd7cb;
+    --accent: #1f3fd8;
+    --accent-soft: #e8ebfa;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  a { color: var(--accent); }
+  ::selection { background: var(--ink); color: var(--paper); }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+
+  /* 1:3 layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 48px;
+    align-items: start;
+    padding-top: 56px;
+  }
+  .side { position: sticky; top: 32px; }
+  main { min-width: 0; }
+
+  /* sidebar */
+  .portrait {
+    display: block;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 1px solid var(--ink);
+    filter: grayscale(35%) contrast(1.05);
+  }
+  .name { font-size: 18px; font-weight: 600; margin-top: 16px; }
+  .loc { font-size: 12px; color: var(--ink-faint); }
+  .loc::before { content: "~/ "; color: var(--accent); }
+  .links { margin-top: 14px; font-size: 13px; }
+  .links a { display: inline-block; text-decoration: none; margin-right: 4px; }
+  .links a::before { content: "["; color: var(--ink-faint); }
+  .links a::after { content: "]"; color: var(--ink-faint); }
+  .links a:hover { background: var(--ink); color: var(--paper); }
+
+  /* sidebar nav */
+  .nav { margin-top: 26px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+  .nav a {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-left: 16px;
+    position: relative;
+  }
+  .nav a::before { content: "·"; position: absolute; left: 2px; color: var(--ink-faint); }
+  .nav a:hover { color: var(--ink); }
+  .nav a.active { color: var(--ink); font-weight: 600; }
+  .nav a.active::before { content: ">"; color: var(--accent); }
+
+  .stats { margin-top: 24px; border-top: 1px solid var(--ink); }
+  .stats div { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+  .stats div:last-child { border-bottom: 1px solid var(--ink); }
+  .stats b { display: block; font-size: 20px; font-weight: 600; }
+  .stats span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); }
+
+  /* header */
+  header { padding: 2px 0 8px; }
+  .kicker { font-size: 12px; color: var(--ink-faint); margin-bottom: 14px; }
+  .kicker::before { content: "$ "; color: var(--accent); }
+  h1 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+  h1::after {
+    content: "█";
+    color: var(--accent);
+    margin-left: 4px;
+    animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { h1::after { animation: none; } }
+  .tagline { margin-top: 14px; color: var(--ink-soft); max-width: 68ch; }
+  .tagline em { font-style: normal; color: var(--ink); font-weight: 500; }
+  .harness-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .harness-link:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+
+  /* agent harness page */
+  .hlayer { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 13px 0; border-bottom: 1px dashed var(--line); }
+  .hlayer:last-of-type { border-bottom: none; }
+  .hlayer h3 { font-size: 13.5px; font-weight: 600; }
+  .hlayer h3::before { content: "> "; color: var(--accent); }
+  .hlayer p { font-size: 13.5px; color: var(--ink-soft); max-width: 62ch; }
+  .hsub { display: grid; grid-template-columns: 92px 1fr; gap: 12px; margin-top: 9px; max-width: 62ch; }
+  .hsub b { font-size: 12.5px; font-weight: 600; color: var(--accent); }
+  .hsub span { font-size: 13px; color: var(--ink-soft); }
+  .hsub span i { font-style: normal; color: var(--ink-faint); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; }
+
+  /* sections */
+  section { padding-top: 44px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 18px;
+  }
+  h2::before { content: "## "; color: var(--accent); }
+
+  /* experience */
+  .job { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--line); }
+  .job:last-of-type { border-bottom: none; }
+  .job time { font-size: 12px; color: var(--ink-faint); padding-top: 2px; }
+  .job h3 { font-size: 15px; font-weight: 600; }
+  .job h3 span { color: var(--ink-faint); font-weight: 400; }
+  .job .role { font-size: 12.5px; color: var(--accent); margin-bottom: 8px; }
+  .job p { color: var(--ink-soft); max-width: 66ch; }
+  .job ul { list-style: none; margin-top: 6px; max-width: 66ch; }
+  .job li { color: var(--ink-soft); padding-left: 18px; position: relative; margin-top: 3px; }
+  .job li::before { content: "*"; position: absolute; left: 2px; color: var(--accent); }
+
+  /* oss rows */
+  .oss a.row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+    text-decoration: none;
+    color: inherit;
+  }
+  .oss a.row:hover .repo { background: var(--ink); color: var(--paper); }
+  .oss .repo { font-size: 13.5px; font-weight: 600; display: inline; }
+  .oss .repo::before { content: "> "; color: var(--accent); }
+  .oss .what { font-size: 13px; color: var(--ink-soft); margin-top: 1px; }
+  .oss .n { font-size: 12px; color: var(--ink-faint); white-space: nowrap; }
+
+  /* PR feed */
+  .pr-tabs { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .pr-tab {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: none;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    color: var(--ink);
+    padding: 3px 12px;
+    cursor: pointer;
+  }
+  .pr-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .pr-tab.active { background: var(--ink); color: var(--paper); }
+  .pr-note { font-size: 11px; color: var(--ink-faint); margin-left: auto; }
+  .pr-list > p { font-size: 13px; color: var(--ink-faint); padding: 12px 0; }
+  .prgroup { border-bottom: 1px dashed var(--line); }
+  .prgroup summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 9px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .prgroup summary::-webkit-details-marker { display: none; }
+  .prgroup .repo { font-size: 13.5px; font-weight: 600; }
+  .prgroup .repo::before { content: "[+] "; color: var(--accent); }
+  .prgroup[open] .repo::before { content: "[-] "; }
+  .prgroup summary:hover .repo { background: var(--ink); color: var(--paper); }
+  .prgroup .n { font-size: 12px; color: var(--ink-faint); white-space: nowrap; }
+  .prgroup ul { list-style: none; padding: 0 0 10px; }
+  .prgroup li a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 2px 0 2px 26px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .prgroup li a:hover { color: var(--accent); }
+  .prgroup li a:hover span::before { content: "> "; }
+  .prgroup li time { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+
+  /* projects */
+  .cards { border-top: 1px dashed var(--line); }
+  .card {
+    display: block;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line);
+    text-decoration: none;
+    color: inherit;
+  }
+  .card h3 { font-size: 13.5px; font-weight: 600; display: inline; }
+  .card h3::before { content: "> "; color: var(--accent); }
+  .card:hover h3 { background: var(--ink); color: var(--paper); }
+  .card p { font-size: 13px; color: var(--ink-soft); margin-top: 1px; max-width: 70ch; }
+
+  /* hire my twin */
+  .twin-blurb { color: var(--ink-soft); max-width: 70ch; margin-bottom: 14px; }
+  .twin-open-hint { color: var(--ink-faint); font-size: 13px; margin-bottom: 18px; }
+  .twin-open-link {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--accent);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .twin-open-link:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+
+  /* chat popup anchored to the launcher */
+  .chat-pop {
+    position: fixed;
+    right: 22px;
+    bottom: 100px;
+    z-index: 49;
+    width: min(400px, calc(100vw - 44px));
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 6px 6px 0 var(--ink);
+    transform-origin: bottom right;
+    animation: pop 0.14s ease-out;
+  }
+  .chat-pop[hidden] { display: none; }
+  @keyframes pop { from { opacity: 0; transform: scale(0.92) translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .chat-pop { animation: none; } }
+  .term-close {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    background: none;
+    border: none;
+    color: var(--paper);
+    cursor: pointer;
+    padding: 0 2px;
+  }
+  .term-close:hover { background: var(--paper); color: var(--ink); }
+  .term-head {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ink);
+    font-size: 12.5px;
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .term-head::before { content: "$ "; color: var(--accent-soft); }
+  .term-log {
+    padding: 10px;
+    height: min(340px, 50vh);
+    overflow-y: auto;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .term-log .t-you { color: var(--ink); font-weight: 600; }
+  .term-log .t-you::before { content: "you@web $ "; color: var(--accent); font-weight: 400; }
+  .term-log .t-twin { color: var(--ink-soft); }
+  .term-log .t-sys { color: var(--ink-faint); font-size: 12px; }
+  .term-log .t-cursor::after { content: "█"; color: var(--accent); animation: blink 1.1s step-end infinite; }
+  .term-row { display: flex; gap: 6px; border-top: 1px dashed var(--line); padding: 8px 10px; }
+  .term-row::before { content: ">"; color: var(--accent); }
+  .term-row input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .mcp-snips { margin-top: 18px; }
+  .mcp-snips p { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 8px; }
+  .snip { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; border: 1px dashed var(--line); padding: 8px 10px; margin-bottom: 8px; }
+  .snip pre { font-size: 12px; overflow-x: auto; color: var(--ink-soft); }
+  .snip pre b { color: var(--ink); font-weight: 600; display: block; margin-bottom: 2px; }
+  .snip button {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 2px 8px;
+    cursor: pointer;
+  }
+  .snip button:hover { background: var(--ink); color: var(--paper); }
+
+  /* floating twin launcher */
+  .twin-launch {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 50;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    image-rendering: pixelated;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .twin-launch img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .twin-launch:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  .twin-launch:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .twin-launch::after {
+    content: "hire me";
+    position: absolute;
+    right: 0;
+    bottom: 70px;
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 8px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+  }
+  .twin-launch:hover::after { opacity: 1; }
+
+  /* twin avatar in the terminal header */
+  .term-head img {
+    width: 18px;
+    height: 18px;
+    vertical-align: -4px;
+    margin-right: 7px;
+    image-rendering: pixelated;
+    border: 1px solid var(--paper);
+  }
+
+  /* skills */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    max-width: 72ch;
+  }
+  .tags span { display: inline-flex; align-items: center; gap: 6px; }
+  .ticon { width: 14px; height: 14px; flex: none; }
+
+  footer {
+    margin-top: 56px;
+    padding: 16px 0 40px;
+    border-top: 1px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  footer a { text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; gap: 36px; padding-top: 40px; }
+    .side { position: static; }
+    .portrait { width: 130px; height: 130px; }
+  }
+  @media (max-width: 600px) {
+    .job { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap layout">
+
+  <aside class="side">
+    <img class="portrait" src="profile.jpg" alt="John Marshall" width="160" height="160">
+    <p class="name">John Marshall</p>
+    <p class="loc">gilbert, az</p>
+    <div class="links">
+      <a href="https://github.com/jsun-m">github</a><a href="https://www.linkedin.com/in/jjmarsha/">linkedin</a><a href="mailto:john.sun.marshall@gmail.com">email</a>
+    </div>
+    <nav class="nav" id="site-nav">
+      <a href="#experience" data-sec="experience">experience</a>
+      <a href="#opensource" data-sec="opensource">open source</a>
+      <a href="#prs" data-sec="prs">pull requests</a>
+      <a href="#projects" data-sec="projects">projects</a>
+      <a href="#writing" data-sec="writing">writing</a>
+      <a href="#skills" data-sec="skills">toolbox</a>
+      <a href="#harness" data-sec="harness">agent harness</a>
+      <a href="#twin" data-sec="twin">hire my twin</a>
+    </nav>
+    <div class="stats">
+      <div><b id="stat-prs">380+</b><span>public pull requests</span></div>
+      <div><b>#4</b><span>contributor · beta9 (1.8k★)</span></div>
+      <div><b>4 yrs</b><span>founding engineer @ beam</span></div>
+    </div>
+  </aside>
+
+  <main>
+
+  <header>
+    <p class="kicker">cat practice.txt</p>
+    <h1>Infrastructure for machines that think.</h1>
+    <p class="tagline">I work where <em>AI agents</em> meet <em>distributed systems</em> — building <a class="harness-link" href="#harness">the full agent harness</a> that puts LLMs to work, and the infrastructure that keeps it all running.</p>
+  </header>
+
+  <section id="experience">
+    <h2>Experience</h2>
+    <div class="job">
+      <time>2025 — now</time>
+      <div>
+        <h3>AG2 <span>// formerly AutoGen</span></h3>
+        <p class="role">Senior Software Engineer, Agentic Systems</p>
+        <p>Building agentic systems on the open-source AgentOS (4.9k★) from the creators of AutoGen.</p>
+        <ul>
+          <li>Shipped MCP server support — serve any AG2 agent as an MCP server, with OAuth resource-server auth</li>
+          <li>Built observability integrations across the LLM tooling ecosystem: Opik, OpenLLMetry, mcp-agent</li>
+          <li>Core engineer on Sutando, an autonomous personal AI agent with voice, vision, and multi-channel bridges</li>
+        </ul>
+      </div>
+    </div>
+    <div class="job">
+      <time>2021 — 2025</time>
+      <div>
+        <h3>Beam <span>// YC W22</span></h3>
+        <p class="role">Founding Engineer</p>
+        <p>Ultrafast serverless GPU cloud for AI workloads — inference, sandboxes, and background jobs.</p>
+        <ul>
+          <li>#4 all-time contributor to beta9, Beam's open-source engine — 276 pull requests over four years</li>
+          <li>Led usage-based billing, real-time analytics pipelines, and task messaging infrastructure</li>
+          <li>Built the Sandbox SDK for JavaScript, checkpoint/restore for pods, and the platform's auth &amp; token systems</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="opensource">
+    <h2>Open Source</h2>
+    <div class="oss">
+      <a class="row" href="https://github.com/beam-cloud/beta9">
+        <div><div class="repo">beam-cloud/beta9</div><div class="what">Serverless GPU inference &amp; sandboxes — core maintainer-level contributor</div></div>
+        <span class="n">276 PRs</span>
+      </a>
+      <a class="row" href="https://github.com/ag2ai/ag2">
+        <div><div class="repo">ag2ai/ag2</div><div class="what">AG2 agents as MCP servers + OAuth, TinyFish web-scraping integration</div></div>
+        <span class="n">4.9k★</span>
+      </a>
+      <a class="row" href="https://github.com/comet-ml/opik">
+        <div><div class="repo">comet-ml/opik</div><div class="what">AG2 integration for LLM tracing &amp; evaluation</div></div>
+        <span class="n">merged</span>
+      </a>
+      <a class="row" href="https://github.com/traceloop/openllmetry">
+        <div><div class="repo">traceloop/openllmetry</div><div class="what">OpenTelemetry instrumentation for the AG2 agent framework</div></div>
+        <span class="n">contrib</span>
+      </a>
+      <a class="row" href="https://github.com/ag2ai/build-with-ag2">
+        <div><div class="repo">ag2ai/build-with-ag2</div><div class="what">Multi-agent due-diligence pipeline — investor-grade research from a single URL</div></div>
+        <span class="n">author</span>
+      </a>
+      <a class="row" href="https://github.com/knative/serving">
+        <div><div class="repo">knative/serving</div><div class="what">Kubernetes-based serverless platform</div></div>
+        <span class="n">contrib</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="prs">
+    <h2>Pull Requests</h2>
+    <div class="pr-tabs">
+      <button class="pr-tab active" data-tab="merged">merged · <span id="count-merged">…</span></button>
+      <button class="pr-tab" data-tab="open">open · <span id="count-open">…</span></button>
+      <span class="pr-note" id="pr-note">live from the GitHub API</span>
+    </div>
+    <div id="pr-list" class="pr-list"><p>Loading pull requests…</p></div>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="cards">
+      <a class="card" href="https://github.com/sonichi/sutando">
+        <h3>sutando</h3>
+        <p>Autonomous personal AI agent — voice, vision, memory, and self-healing skills. 45+ PRs across health-checks, metering, and agent bridges.</p>
+      </a>
+      <a class="card" href="https://github.com/jsun-m/otto-releases">
+        <h3>otto // meeting copilot</h3>
+        <p>Desktop meeting copilot for macOS — real-time transcription and assistance.</p>
+      </a>
+      <a class="card" href="https://github.com/jsun-m/az-termite-report-scanner">
+        <h3>az-termite-report-scanner</h3>
+        <p>Scrapes Arizona's public termite-report registry so homebuyers don't have to.</p>
+      </a>
+      <a class="card" href="https://github.com/jsun-m/BERT-mental">
+        <h3>bert-mental</h3>
+        <p>Fine-tuned BERT models for mental-health text classification.</p>
+      </a>
+    </div>
+  </section>
+
+  <section id="harness">
+    <h2>The Agent Harness</h2>
+    <p class="twin-blurb">A model on its own is a brain in a jar. The harness is everything wrapped around it that turns raw LLM calls into an agent you can actually trust with work — each of these is a system I've shipped in production:</p>
+    <div class="hlayer">
+      <h3>memory</h3>
+      <div>
+        <p>The layer everyone underestimates. It's not one store — it's four systems with different lifetimes:</p>
+        <div class="hsub"><b>working</b><span><i>short-term</i>The active context window — recent chat, immediate inputs, whatever the current decision needs. Resets when the session ends.</span></div>
+        <div class="hsub"><b>episodic</b><span><i>long-term</i>Time-indexed record of past interactions, tool calls, and their outcomes. This is what gives multi-step work continuity.</span></div>
+        <div class="hsub"><b>semantic</b><span><i>long-term</i>Facts, rules, concepts, user preferences — knowledge that doesn't care about timestamps.</span></div>
+        <div class="hsub"><b>procedural</b><span><i>long-term</i>Skills, routines, and protocols — how the agent does things, encoded so behavior survives across sessions.</span></div>
+        <p style="margin-top:9px">Built these for Sutando's vault + session replay and AG2's memory streams (episodic rebuild per turn, semantic recall over embeddings).</p>
+      </div>
+    </div>
+    <div class="hlayer">
+      <h3>tool suite</h3>
+      <p>The agent's verbs. Tool schemas a model can reliably follow, deterministic dispatch, results truncated and framed for the context window, credentials injected at call time so they never touch the prompt — and MCP on both sides, so tools compose across processes and editors.</p>
+    </div>
+    <div class="hlayer">
+      <h3>skills manager</h3>
+      <p>Capabilities as loadable bundles — instructions + tools packaged together, discovered, loaded, and unloaded at runtime so the agent carries only what the task needs. The agent browses its own catalog instead of shipping every tool in every prompt. Built AG2's skill runtime and Sutando's skill loader on this pattern.</p>
+    </div>
+    <div class="hlayer">
+      <h3>security</h3>
+      <p>Agents run untrusted-by-default: sandboxed execution, scoped credentials injected per call (never in the prompt), auth &amp; token systems, OAuth for MCP servers. Shipped the token/auth layer at Beam and the MCP OAuth resource server in AG2.</p>
+    </div>
+    <div class="hlayer">
+      <h3>guardrails</h3>
+      <p>Bounded autonomy — allowlisted tools, rate and spend caps, step limits, confirmation gates on side effects. The difference between an agent that works and one you have to babysit.</p>
+    </div>
+    <div class="hlayer">
+      <h3>evals</h3>
+      <p>You can't improve what you don't measure: regression suites over agent behavior, tracing every tool call and token, observability wired through Opik and OpenLLMetry. Evals are the CI of agentic systems.</p>
+    </div>
+    <div class="hlayer">
+      <h3>human</h3>
+      <p>The outermost loop stays human — pending-question queues, approval gates, escalation paths. A good harness knows when to stop and ask.</p>
+    </div>
+  </section>
+
+  <section id="twin">
+    <h2>Hire My Twin</h2>
+    <p class="twin-blurb">An agent built on my experience — it consults on <em>beam.cloud</em> infrastructure (with live search over the Beam docs), agentic systems (MCP, AG2/AutoGen), and code design. Talk to it here, or wire it into your editor over MCP.</p>
+    <p class="twin-open-hint">&gt; <button class="twin-open-link" id="twin-open">open chat</button> — or click the capybara in the corner</p>
+    <div class="mcp-snips">
+      <p># or hook the twin into your editor — tools: ask_john_twin · search_beam_docs · about_john</p>
+      <div class="snip"><pre><b># claude code</b><span class="snip-cc">claude mcp add --transport http john-twin TWIN_URL/mcp</span></pre><button data-copy="snip-cc">copy</button></div>
+      <div class="snip"><pre><b># cursor — ~/.cursor/mcp.json</b><span class="snip-cur">{ "mcpServers": { "john-twin": { "url": "TWIN_URL/mcp" } } }</span></pre><button data-copy="snip-cur">copy</button></div>
+      <div class="snip"><pre><b># claude desktop / other clients</b><span class="snip-cd">npx mcp-remote TWIN_URL/mcp</span></pre><button data-copy="snip-cd">copy</button></div>
+    </div>
+  </section>
+
+  <section id="writing">
+    <h2>Writing</h2>
+    <div class="oss">
+      <a class="row" href="https://www.beam.cloud/blog/ngrok-python">
+        <div><div class="repo">Introducing: Beam Preview Environments</div><div class="what">Beam Serve — ephemeral APIs from Python functions, and a better debugging loop</div></div>
+        <span class="n">beam.cloud</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>Toolbox</h2>
+    <p class="tags">
+      <span><img class="ticon" src="https://cdn.simpleicons.org/go/1a1915" alt="" onerror="this.remove()">Go</span><span><img class="ticon" src="https://cdn.simpleicons.org/python/1a1915" alt="" onerror="this.remove()">Python</span><span><img class="ticon" src="https://cdn.simpleicons.org/typescript/1a1915" alt="" onerror="this.remove()">TypeScript</span><span><img class="ticon" src="https://cdn.simpleicons.org/react/1a1915" alt="" onerror="this.remove()">React</span><span><img class="ticon" src="https://cdn.simpleicons.org/kubernetes/1a1915" alt="" onerror="this.remove()">Kubernetes</span><span><img class="ticon" src="https://cdn.simpleicons.org/docker/1a1915" alt="" onerror="this.remove()">containers / runc</span><span><svg class="ticon" viewBox="0 0 13 13" fill="none" stroke="#1a1915" stroke-width="1.4" aria-hidden="true"><path d="M1 4h9M8 1.5 10.5 4 8 6.5M12 9H3M5 6.5 2.5 9 5 11.5"/></svg>gRPC</span><span><img class="ticon" src="https://cdn.simpleicons.org/postgresql/1a1915" alt="" onerror="this.remove()">PostgreSQL</span><span><img class="ticon" src="https://cdn.simpleicons.org/redis/1a1915" alt="" onerror="this.remove()">Redis</span><span><img class="ticon" src="https://cdn.simpleicons.org/opentelemetry/1a1915" alt="" onerror="this.remove()">OpenTelemetry</span><span><img class="ticon" src="twin-avatar.png" alt="">LLM agents</span><span><img class="ticon" src="https://cdn.simpleicons.org/modelcontextprotocol/1a1915" alt="" onerror="this.remove()">MCP</span>
+    </p>
+  </section>
+
+  <footer>
+    <span>© 2026 John Marshall — EOF</span>
+    <span>USC alum · <a href="mailto:john.sun.marshall@gmail.com">john.sun.marshall@gmail.com</a></span>
+  </footer>
+
+  <div class="chat-pop" id="chat-pop" hidden>
+    <div class="term-head"><img src="twin-avatar.png" alt="">ssh twin@johnmarshall.dev<button class="term-close" id="term-close" aria-label="Close chat">[x]</button></div>
+    <div class="term-log" id="term-log"></div>
+    <div class="term-row"><input id="term-in" placeholder="ask about beam, agents, or code — enter to send" maxlength="2000" autocomplete="off"></div>
+  </div>
+
+  <button class="twin-launch" id="twin-launch" title="hire my agentic twin" aria-label="Open twin chat">
+    <img src="twin-avatar.png" alt="John's agentic twin">
+  </button>
+
+  </main>
+
+</div>
+
+<script>
+(function () {
+  // hash router: one section visible at a time, experience by default
+  var SECTIONS = ["experience", "harness", "opensource", "prs", "projects", "writing", "skills", "twin"];
+
+  function show(id) {
+    if (SECTIONS.indexOf(id) === -1) id = "experience";
+    SECTIONS.forEach(function (s) {
+      var el = document.getElementById(s);
+      if (el) el.style.display = s === id ? "" : "none";
+    });
+    document.querySelectorAll("#site-nav a").forEach(function (a) {
+      a.classList.toggle("active", a.dataset.sec === id);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function route() { show(decodeURIComponent((location.hash || "").slice(1))); }
+  window.addEventListener("hashchange", route);
+  route();
+  // the browser's native anchor-jump on load can outrace show(); reset it
+  window.addEventListener("load", function () { window.scrollTo(0, 0); });
+})();
+</script>
+
+<script>
+(function () {
+  var USER = "jsun-m";
+  var CACHE_KEY = "pr-feed-v1";
+  var CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+  // snapshot fallback (Aug 2026) used when the API is unreachable or rate-limited
+  var SNAPSHOT = [
+    ["beam-cloud/beta9", 276], ["sonichi/sutando", 47], ["AG2Platform/stando", 13],
+    ["slai-labs/Statsd-PostgreSQL-Backend", 9], ["beam-cloud/beam-client", 8],
+    ["beam-cloud/examples", 5], ["nuclon/Statsd-PostgreSQL-Backend", 5],
+    ["ag2ai/build-with-ag2", 4], ["ag2ai/ag2", 3], ["beam-cloud/beam-js", 3],
+    ["slai-labs/get-beam", 2], ["lastmile-ai/mcp-agent", 1], ["Arindam200/awesome-ai-apps", 1],
+    ["comet-ml/opik", 1], ["traceloop/openllmetry", 1], ["beam-cloud/fastloop", 1],
+    ["beam-cloud/go2proto", 1], ["beam-cloud/python-betterproto", 1], ["beam-cloud/runc", 1],
+    ["beam-cloud/blobcache-v2", 1], ["knative/serving", 1]
+  ];
+
+  var listEl = document.getElementById("pr-list");
+  var noteEl = document.getElementById("pr-note");
+  var data = { merged: null, open: null };
+  var activeTab = "merged";
+
+  function searchUrl(q, page) {
+    return "https://api.github.com/search/issues?q=" + encodeURIComponent(q) +
+           "&per_page=100&page=" + page;
+  }
+
+  function fetchAll(q) {
+    var items = [];
+    function page(p) {
+      return fetch(searchUrl(q, p)).then(function (r) {
+        if (!r.ok) throw new Error("GitHub API " + r.status);
+        return r.json();
+      }).then(function (d) {
+        items = items.concat(d.items.map(function (i) {
+          return {
+            t: i.title,
+            u: i.html_url,
+            r: i.repository_url.split("/").slice(-2).join("/"),
+            d: i.created_at.slice(0, 10)
+          };
+        }));
+        if (items.length < d.total_count && d.items.length === 100 && p < 10) return page(p + 1);
+        return items;
+      });
+    }
+    return page(1);
+  }
+
+  function readCache() {
+    try {
+      var c = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (c && Date.now() - c.t < CACHE_TTL && c.merged && c.open) return c;
+    } catch (e) {}
+    return null;
+  }
+
+  function writeCache() {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), merged: data.merged, open: data.open }));
+    } catch (e) {}
+  }
+
+  function groupByRepo(items) {
+    var groups = {};
+    items.forEach(function (i) { (groups[i.r] = groups[i.r] || []).push(i); });
+    return Object.keys(groups).map(function (r) {
+      var prs = groups[r].sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+      return { repo: r, prs: prs };
+    }).sort(function (a, b) { return b.prs.length - a.prs.length; });
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function render() {
+    var items = data[activeTab];
+    if (!items) return;
+    if (!items.length) {
+      listEl.innerHTML = "<p>No " + activeTab + " pull requests right now.</p>";
+      return;
+    }
+    var html = groupByRepo(items).map(function (g, idx) {
+      var rows = g.prs.map(function (p) {
+        return '<li><a href="' + esc(p.u) + '"><span>' + esc(p.t) +
+               "</span><time>" + p.d + "</time></a></li>";
+      }).join("");
+      return '<details class="prgroup"' + (idx === 0 && activeTab === "open" ? " open" : "") + ">" +
+             '<summary><span class="repo">' + esc(g.repo) + '</span><span class="n">' +
+             g.prs.length + (g.prs.length === 1 ? " PR" : " PRs") + "</span></summary>" +
+             "<ul>" + rows + "</ul></details>";
+    }).join("");
+    listEl.innerHTML = html;
+  }
+
+  function setCounts() {
+    if (data.merged) document.getElementById("count-merged").textContent = data.merged.length;
+    if (data.open) document.getElementById("count-open").textContent = data.open.length;
+    var total = (data.merged ? data.merged.length : 0) + (data.open ? data.open.length : 0);
+    var stat = document.getElementById("stat-prs");
+    if (stat && total) stat.textContent = total;
+  }
+
+  function renderSnapshot() {
+    noteEl.textContent = "live feed unavailable — snapshot from Aug 2026";
+    document.getElementById("count-merged").textContent = "~370";
+    document.getElementById("count-open").textContent = "–";
+    listEl.innerHTML = SNAPSHOT.map(function (s) {
+      var q = "https://github.com/search?type=pullrequests&q=" +
+              encodeURIComponent("repo:" + s[0] + " author:" + USER + " is:pr");
+      return '<details class="prgroup"><summary><span class="repo">' + esc(s[0]) +
+             '</span><span class="n">' + s[1] + (s[1] === 1 ? " PR" : " PRs") + "</span></summary>" +
+             '<ul><li><a href="' + q + '"><span>View on GitHub search ↗</span></a></li></ul></details>';
+    }).join("");
+  }
+
+  document.querySelectorAll(".pr-tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".pr-tab").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      activeTab = btn.dataset.tab;
+      render();
+    });
+  });
+
+  var cached = readCache();
+  if (cached) {
+    data.merged = cached.merged;
+    data.open = cached.open;
+    noteEl.textContent = "live from the GitHub API · cached";
+    setCounts();
+    render();
+    return;
+  }
+
+  fetchAll("author:" + USER + " type:pr is:merged")
+    .then(function (merged) {
+      data.merged = merged;
+      setCounts();
+      render();
+      return fetchAll("author:" + USER + " type:pr is:open");
+    })
+    .then(function (open) {
+      data.open = open;
+      setCounts();
+      writeCache();
+    })
+    .catch(function () {
+      if (data.merged) { setCounts(); render(); } else { renderSnapshot(); }
+    });
+})();
+</script>
+
+<script>
+(function () {
+  // deployed twin base URL; local dev override: ?twin=http://127.0.0.1:8787
+  var TWIN_URL = "https://john-twin-871bbcc-latest.app.beam.cloud";
+  var qs = new URLSearchParams(location.search).get("twin");
+  if (qs && /^https?:\/\//.test(qs)) TWIN_URL = qs.replace(/\/$/, "");
+
+  var HIST_KEY = "twin-chat-v1";
+  var HIST_TTL = 12 * 60 * 60 * 1000;
+  var logEl = document.getElementById("term-log");
+  var inEl = document.getElementById("term-in");
+  var messages = [];
+  var busy = false;
+
+  // fill MCP snippets with the real URL
+  ["snip-cc", "snip-cur", "snip-cd"].forEach(function (cls) {
+    var el = document.querySelector("." + cls);
+    if (el) el.textContent = el.textContent.replace("TWIN_URL", TWIN_URL || "<coming soon>");
+  });
+  document.querySelectorAll(".snip button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.querySelector("." + btn.dataset.copy);
+      navigator.clipboard.writeText(el.textContent).then(function () {
+        btn.textContent = "copied";
+        setTimeout(function () { btn.textContent = "copy"; }, 1200);
+      });
+    });
+  });
+
+  function line(cls, text) {
+    var d = document.createElement("div");
+    d.className = cls;
+    d.textContent = text;
+    logEl.appendChild(d);
+    logEl.scrollTop = logEl.scrollHeight;
+    return d;
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(HIST_KEY, JSON.stringify({ t: Date.now(), messages: messages.slice(-200) }));
+    } catch (e) {}
+  }
+
+  function restore() {
+    try {
+      var c = JSON.parse(localStorage.getItem(HIST_KEY));
+      if (c && Date.now() - c.t < HIST_TTL && c.messages) {
+        messages = c.messages;
+        messages.forEach(function (m) {
+          line(m.role === "user" ? "t-you" : "t-twin", m.content);
+        });
+      }
+    } catch (e) {}
+  }
+
+  restore();
+  if (!TWIN_URL) {
+    line("t-sys", "twin offline — deployment pending. MCP + chat coming online soon.");
+    inEl.disabled = true;
+  } else if (!messages.length) {
+    line("t-sys", "connected · john's agentic twin · built on ag2 · ask about beam.cloud, agents, or code");
+  }
+
+  function send(text) {
+    if (busy || !TWIN_URL) return;
+    busy = true;
+    line("t-you", text);
+    messages.push({ role: "user", content: text });
+    save();
+    var sys = line("t-sys t-cursor", "establishing connection...");
+    var out = null;
+    var acc = "";
+
+    fetch(TWIN_URL + "/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ messages: messages }),
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.json().then(function (j) { throw new Error(j.error || ("http " + res.status)); });
+      }
+      sys.remove();
+      var reader = res.body.getReader();
+      var dec = new TextDecoder();
+      var buf = "";
+      function pump() {
+        return reader.read().then(function (r) {
+          if (r.done) return;
+          buf += dec.decode(r.value, { stream: true });
+          var frames = buf.split("\n\n");
+          buf = frames.pop();
+          frames.forEach(function (f) {
+            if (f.indexOf("data: ") !== 0) return;
+            var ev = JSON.parse(f.slice(6));
+            if (ev.type === "token") {
+              if (!out) out = line("t-twin t-cursor", "");
+              acc += ev.text;
+              out.textContent = acc;
+              logEl.scrollTop = logEl.scrollHeight;
+            } else if (ev.type === "tool_call") {
+              line("t-sys", "[" + ev.name + " " + JSON.stringify(ev.input) + "]");
+            } else if (ev.type === "error") {
+              line("t-sys", "! " + ev.message);
+            }
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (e) {
+      sys.remove();
+      line("t-sys", "! " + e.message);
+    }).finally(function () {
+      if (out) out.classList.remove("t-cursor");
+      if (acc) { messages.push({ role: "assistant", content: acc }); save(); }
+      busy = false;
+      inEl.focus();
+    });
+  }
+
+  inEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && inEl.value.trim()) {
+      var t = inEl.value.trim();
+      inEl.value = "";
+      send(t);
+    }
+  });
+
+  // capybara launcher toggles the chat popup; first open leads with "hire me"
+  var pop = document.getElementById("chat-pop");
+
+  function openChat() {
+    pop.hidden = false;
+    logEl.scrollTop = logEl.scrollHeight;
+    inEl.focus({ preventScroll: true });
+    if (TWIN_URL && !busy && !messages.length) send("hire me");
+  }
+
+  document.getElementById("twin-launch").addEventListener("click", function () {
+    if (pop.hidden) openChat(); else pop.hidden = true;
+  });
+  document.getElementById("term-close").addEventListener("click", function () {
+    pop.hidden = true;
+  });
+  var openLink = document.getElementById("twin-open");
+  if (openLink) openLink.addEventListener("click", openChat);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !pop.hidden) pop.hidden = true;
+  });
+})();
+</script>
+</body>
+</html>
