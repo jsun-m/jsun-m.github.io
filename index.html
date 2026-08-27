@@ -322,7 +322,7 @@
   .twin-launch:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
   .twin-launch:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
   .twin-launch::after {
-    content: "hire me";
+    content: "chat with me";
     position: absolute;
     right: 0;
     bottom: 70px;
@@ -903,7 +903,7 @@
     pop.hidden = false;
     logEl.scrollTop = logEl.scrollHeight;
     inEl.focus({ preventScroll: true });
-    if (TWIN_URL && !busy && !messages.length) send("hire me");
+    if (TWIN_URL && !busy && !messages.length) send("chat with me");
   }
 
   document.getElementById("twin-launch").addEventListener("click", function () {
